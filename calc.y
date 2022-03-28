@@ -118,7 +118,7 @@ int num;
 
 
 %%
-S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(1); }  
+S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(0); }  
   ;
 
 

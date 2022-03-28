@@ -11,3 +11,7 @@ calc.exe: y.tab.c lex.yy.c
 
 clean:
 	rm calc.exe y.tab.c lex.yy.c
+
+tests: 
+	echo "x = " | ./calc.exe
+	echo 
