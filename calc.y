@@ -37,6 +37,7 @@ int add_nom(int coef, int deg, int index) {
 
 void print_polynom() {
 	printf("RESULT:\n");
+	if (nom_number[polynom_index] == 0) printf("0");
 	for (int i = 0; i < nom_number[polynom_index]; i++) {
 		//printf("COEF: %d; Letter: %c; Degree: %d\n", polynom[i].coef, polynom[i].letter, polynom[i].deg);
 		if (polynom[polynom_index][i].coef > 0) printf("+");		
@@ -114,32 +115,33 @@ int num;
 
 
 %%
-S : E '='		{  multiply_polynom(); polynom_index = 0; print_polynom(); }
+S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(1); }  
   ;
 
 
 
 E : E '*'		{  multiply_polynom(); }
-  | E M 
-  | M
+  | E '+' M 
+  | M                       
   ;
 
 
 
 M : N 'x' '.' N 	{ /*printf("COEF: %d; Degree: %d\n", $1,  $4); */$$ = add_nom($1,  $4, polynom_index);}
+  | N 'x' '.' '+' N 	{ /*printf("COEF: %d; Degree: %d\n", $1,  $5); */$$ = add_nom($1,  $5, polynom_index);}
+  | N 'x' '.' '-' N 	{ /*printf("COEF: %d; Degree: %d\n", $1,  -$5); */$$ = add_nom($1, - $5, polynom_index);}
+
   | N 'x'		{ /*printf("COEF: %d; Degree: %d\n", $1,  1); */$$ = add_nom($1, 1, polynom_index);}
   | 'x' '.' N		{ /*printf("COEF: %d; Degree: %d\n", 1, $3);*/ $$ = add_nom(1,  $3, polynom_index);}
-  | 'x'			{ /*printf("COEF: %d; Degree: %d\n", 1,  1); */ $$ = add_nom(1, 1, polynom_index); }
+  | 'x' '.' '+' N	{ /*printf("COEF: %d; Degree: %d\n", 1, $4);*/ $$ = add_nom(1,  $4, polynom_index);}
+  | 'x' '.' '-' N	{ /*printf("COEF: %d; Degree: %d\n", 1, -$4);*/ $$ = add_nom(1,  -$4, polynom_index);}
+  | 'x'			{ /*printf("COEF: %d; Degree: %d\n", 1,  1);*/ $$ = add_nom(1, 1, polynom_index); }
   | N 			{ /*printf("COEF: %d; Degree: 0\n", $1); */$$ = add_nom($1, 0, polynom_index); }
   ;
 
 
 
 N : NUM_TOKEN 	  	{$$ = $1;} 
-  | '+' NUM_TOKEN 	{$$ = $2;} 
-  | '-' NUM_TOKEN 	{$$ = -$2;} 
-  | '+' 		{$$ = 1;}
-  | '-' 		{$$ = 1;}
   ;
 
  
