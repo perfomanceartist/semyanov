@@ -10,6 +10,8 @@ int deg;
 int coef;
 } nom;
 
+nom t_nom;
+
 nom polynom[3][100];
 int nom_number[3] = {0, 0, 0};
 //nom_number[0] = 0; nom_number[1] = 0; nom_number[2] = 0;
@@ -121,22 +123,23 @@ S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(1); 
 
 
 E : E '*'		{  multiply_polynom(); }
-  | E '+' M 
-  | M                       
+  | E '+' M 		{  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
+  | E '-' M 		{  add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
+  | M                   {  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}    
   ;
 
 
 
-M : N 'x' '.' N 	{ /*printf("COEF: %d; Degree: %d\n", $1,  $4); */$$ = add_nom($1,  $4, polynom_index);}
-  | N 'x' '.' '+' N 	{ /*printf("COEF: %d; Degree: %d\n", $1,  $5); */$$ = add_nom($1,  $5, polynom_index);}
-  | N 'x' '.' '-' N 	{ /*printf("COEF: %d; Degree: %d\n", $1,  -$5); */$$ = add_nom($1, - $5, polynom_index);}
+M : N 'x' '.' N 	{ t_nom.coef = $1; t_nom.deg = $4;	}
+  | N 'x' '.' '+' N 	{ t_nom.coef = $1; t_nom.deg = $5;	}
+  | N 'x' '.' '-' N 	{ t_nom.coef = $1; t_nom.deg = -$5;	}
 
-  | N 'x'		{ /*printf("COEF: %d; Degree: %d\n", $1,  1); */$$ = add_nom($1, 1, polynom_index);}
-  | 'x' '.' N		{ /*printf("COEF: %d; Degree: %d\n", 1, $3);*/ $$ = add_nom(1,  $3, polynom_index);}
-  | 'x' '.' '+' N	{ /*printf("COEF: %d; Degree: %d\n", 1, $4);*/ $$ = add_nom(1,  $4, polynom_index);}
-  | 'x' '.' '-' N	{ /*printf("COEF: %d; Degree: %d\n", 1, -$4);*/ $$ = add_nom(1,  -$4, polynom_index);}
-  | 'x'			{ /*printf("COEF: %d; Degree: %d\n", 1,  1);*/ $$ = add_nom(1, 1, polynom_index); }
-  | N 			{ /*printf("COEF: %d; Degree: 0\n", $1); */$$ = add_nom($1, 0, polynom_index); }
+  | N 'x'		{ t_nom.coef = $1; t_nom.deg = 1;	}
+  | 'x' '.' N		{ t_nom.coef = 1; t_nom.deg = $3;	}
+  | 'x' '.' '+' N	{ t_nom.coef = 1; t_nom.deg = $4;	}
+  | 'x' '.' '-' N	{ t_nom.coef = 1; t_nom.deg = -$4;	}
+  | 'x'			{ t_nom.coef = 1; t_nom.deg = 1;	}
+  | N 			{ t_nom.coef = $1; t_nom.deg = 0;	}
   ;
 
 
