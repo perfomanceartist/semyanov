@@ -18,7 +18,7 @@ int nom_number[3] = {0, 0, 0};
 int polynom_index = 0;
 
 int add_nom(int coef, int deg, int index) {
-        printf("Adding %d * x ^ %d in %d polynom\n", coef, deg, index);
+       // printf("Adding %d * x ^ %d in %d polynom\n", coef, deg, index);
 	for (int i = 0; i < nom_number[index]; i++ ) 
 		if (polynom[index][i].deg == deg) {
 			if (polynom[index][i].coef + coef == 0) {
@@ -129,18 +129,21 @@ E : E '*' M		{  multiply_polynom(); add_nom(t_nom.coef, t_nom.deg, polynom_index
   | E '+' M 		{  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
   | E '-' M 		{  add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
   | M                   {  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}    
+  | '+' M       	{  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}
+  | '-' M               {  add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}    
+    
   ;
 
 
 
-M : N 'x' '.' N 	{ t_nom.coef = $1; t_nom.deg = $4;	}
-  | N 'x' '.' '+' N 	{ t_nom.coef = $1; t_nom.deg = $5;	}
-  | N 'x' '.' '-' N 	{ t_nom.coef = $1; t_nom.deg = -$5;	}
+M : N 'x' '^' N 	{ t_nom.coef = $1; t_nom.deg = $4;	}
+  | N 'x' '^' '+' N 	{ t_nom.coef = $1; t_nom.deg = $5;	}
+  | N 'x' '^' '-' N 	{ t_nom.coef = $1; t_nom.deg = -$5;	}
 
   | N 'x'		{ t_nom.coef = $1; t_nom.deg = 1;	}
-  | 'x' '.' N		{ t_nom.coef = 1; t_nom.deg = $3;	}
-  | 'x' '.' '+' N	{ t_nom.coef = 1; t_nom.deg = $4;	}
-  | 'x' '.' '-' N	{ t_nom.coef = 1; t_nom.deg = -$4;	}
+  | 'x' '^' N		{ t_nom.coef = 1; t_nom.deg = $3;	}
+  | 'x' '^' '+' N	{ t_nom.coef = 1; t_nom.deg = $4;	}
+  | 'x' '^' '-' N	{ t_nom.coef = 1; t_nom.deg = -$4;	}
   | 'x'			{ t_nom.coef = 1; t_nom.deg = 1;	}
   | N 			{ t_nom.coef = $1; t_nom.deg = 0;	}
   ;
