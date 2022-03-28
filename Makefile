@@ -14,4 +14,14 @@ clean:
 
 tests: 
 	echo "x = " | ./calc.exe
-	echo 
+	echo "x + 1= " | ./calc.exe
+	echo "1x - 1= " | ./calc.exe
+	echo "-3x + 1= " | ./calc.exe
+	echo "x.2 + x= " | ./calc.exe
+	echo "5x.2 - x.-3 =  " | ./calc.exe
+	echo "5x.2 - 5x.2 =  " | ./calc.exe
+	
+	echo "x + 1 * x = " | ./calc.exe
+	echo "x + 1 * x + 1 = " | ./calc.exe
+	echo "x + 1 * -x.2 = " | ./calc.exe
+	echo "x + 1 * -x.3 + x = " | ./calc.exe
