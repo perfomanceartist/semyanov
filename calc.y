@@ -18,6 +18,7 @@ int nom_number[3] = {0, 0, 0};
 int polynom_index = 0;
 
 int add_nom(int coef, int deg, int index) {
+        printf("Adding %d * x ^ %d in %d polynom\n", coef, deg, index);
 	for (int i = 0; i < nom_number[index]; i++ ) 
 		if (polynom[index][i].deg == deg) {
 			if (polynom[index][i].coef + coef == 0) {
@@ -122,7 +123,7 @@ S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(1); 
 
 
 
-E : E '*'		{  multiply_polynom(); }
+E : E '*' M		{  multiply_polynom(); add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0; }
   | E '+' M 		{  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
   | E '-' M 		{  add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
   | M                   {  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}    
