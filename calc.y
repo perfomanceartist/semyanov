@@ -9,7 +9,7 @@ typedef struct {
 int deg;
 int coef;
 } nom;
-//
+
 nom t_nom;
 
 nom polynom[3][100];
@@ -118,6 +118,34 @@ int num;
 
 
 %%
+
+S : T
+  ;
+T : P * P 
+  | P
+  ;
+
+P : '(' E ')'
+  ;
+
+E : E '+' M
+  | E '-' M 
+  | M
+  ;
+
+M : N 'x' 
+  | N 'x' ^ N 
+  | N
+  | 'x'
+  | N 'x'
+  ;
+
+N : NUM_TOKEN			{$$ = $1;			} 
+  | '+' NUM_TOKEN		{$$ = $2;			} 
+  | '-' NUM_TOKEN		{$$ = -$2;			} 
+  ;
+
+/*
 S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(0); }  
   ;
 
@@ -153,6 +181,7 @@ M : N 'x' '^' N 	{ t_nom.coef = $1; t_nom.deg = $4;	}
 N : NUM_TOKEN 	  	{$$ = $1;} 
   ;
 
+*/
  
 
 
