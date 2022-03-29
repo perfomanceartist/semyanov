@@ -11,11 +11,11 @@ int coef;
 } nom;
 nom t_nom;
 
-nom polynoms[100][100];
 
 
-nom polynom[3][100];
-int nom_number[3] = {0, 0, 0};
+
+nom polynom[100][100];
+int nom_number[100] = {0, 0, 0};
 //nom_number[0] = 0; nom_number[1] = 0; nom_number[2] = 0;
 int polynom_index = 0;
 
@@ -62,6 +62,24 @@ void print_polynom() {
 	printf("\n");
 }
 
+void negate_polynom(int index1) {
+	for (int i = 0; i < nom_number[index1]; i++) {
+		polynom[index1][i].coef *= -1;
+	}
+}
+
+void add_polynom(int index1, int index2) {
+	for (int i = 0; i < nom_number[index2]; i++) {
+		add_nom(polynom[index2][i].coef, polynom[index2][i].deg, index1);
+	}
+	
+	for (int i = 0; i < nom_number[index2]; i++)  {
+		polynom[index2][i].coef = 0;;
+		polynom[index2][i].deg = 0;
+	}
+
+	nom_number[index2] = 0;
+}
 
 void multiply_polynom(int index1, int index2) {
 	/*if (polynom_index == 0) {
@@ -126,8 +144,10 @@ int num;
 
 S : T					{ print_polynom();						}
   ;
-T : T '*' P 				{ multiply_polynom($1, $3);	$$ = $1;	}
-  | P					{ $$ = $1;								}
+T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1;					}
+  | T '+' P 			{ add_polynom($1, $3); 		$$ = $1;					}
+  | T '-' P 			{ negate_polynom($3); add_polynom($1, $3); 	$$ = $1;	}
+  | P					{ $$ = $1;												}
   ;
 
 P : '(' E ')'			{ polynom_index++;	$$ = $2;		}
@@ -140,7 +160,7 @@ E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
 
 M : N 'x' 				{ t_nom.coef = $1; t_nom.deg = 1;	}
   | N 'x' '^' N 		{ t_nom.coef = $1; t_nom.deg = $4;	}
-  | N					{ t_nom.coef = $1; t_nom.deg = 1;	}
+  | N					{ t_nom.coef = $1; t_nom.deg = 0;	}
   | 'x'					{ t_nom.coef = 1; t_nom.deg = 1;	}
   | N 'x'				{ t_nom.coef = $1; t_nom.deg = 1;	}
   | 'x' '^' N			{ t_nom.coef = 1; t_nom.deg = $3;	}
