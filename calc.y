@@ -133,6 +133,8 @@ int num;
 %type <num> N M E P T
 //%type <letter> L
 
+%left '+' '-'
+%right '*'
 
 %%
 
