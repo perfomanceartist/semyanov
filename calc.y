@@ -41,6 +41,7 @@ int add_nom(int coef, int deg, int index) {
 }
 
 void print_polynom() {
+	polynom_index = 0;
 	printf("RESULT:\n");
 	if (nom_number[polynom_index] == 0) printf("0");
 	for (int i = 0; i < nom_number[polynom_index]; i++) {
@@ -129,14 +130,7 @@ int num;
 }
 
 %token <num> NUM_TOKEN
-//%token <letter> LETTER_TOKEN
-//%token <deg> DEGREE_TOKEN 
-/*%type <f> E T F */
-%type <num> N 
-%type <num> M  
-%type <num> E 
-%type <num> P 
-%type <num> T 
+%type <num> N M E P T
 //%type <letter> L
 
 
