@@ -133,8 +133,8 @@ int num;
 %type <num> N M E P T
 //%type <letter> L
 
-%left '+' '-'
-%right '*'
+%left '+' '-' '*'
+ 
 
 %%
 
@@ -146,7 +146,8 @@ T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1;					}
   | P					{ $$ = $1;												}
   ;
 
-P : '(' E ')'			{ polynom_index++;	$$ = $2;		}
+P : '(' P ')'			{ polynom_index++;	$$ = $2;		}
+  | '(' E ')'			{ polynom_index++;	$$ = $2;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
