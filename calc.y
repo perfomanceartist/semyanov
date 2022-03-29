@@ -114,7 +114,11 @@ int num;
 //%token <letter> LETTER_TOKEN
 //%token <deg> DEGREE_TOKEN 
 /*%type <f> E T F */
-%type <num> N M E P T
+%type <num> N 
+%type <num> M  
+%type <num> E 
+%type <num> P 
+%type <num> T 
 //%type <letter> L
 
 
@@ -122,7 +126,7 @@ int num;
 
 S : T					{ print_polynom();						}
   ;
-T : T * P 				{ multiply_polynom($1, $2);	$$ = $1;	}
+T : T '*' P 				{ multiply_polynom($1, $2);	$$ = $1;	}
   | P					{ $$ = $1;								}
   ;
 
