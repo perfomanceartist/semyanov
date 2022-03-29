@@ -9,7 +9,7 @@ typedef struct {
 int deg;
 int coef;
 } nom;
-
+//
 nom t_nom;
 
 nom polynom[3][100];
