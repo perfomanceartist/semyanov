@@ -126,7 +126,7 @@ int num;
 
 S : T					{ print_polynom();						}
   ;
-T : T '*' P 				{ multiply_polynom($1, $2);	$$ = $1;	}
+T : T '*' P 				{ multiply_polynom($1, $3);	$$ = $1;	}
   | P					{ $$ = $1;								}
   ;
 
