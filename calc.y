@@ -9,8 +9,10 @@ typedef struct {
 int deg;
 int coef;
 } nom;
-
 nom t_nom;
+
+nom polynoms[100][100];
+
 
 nom polynom[3][100];
 int nom_number[3] = {0, 0, 0};
@@ -61,44 +63,43 @@ void print_polynom() {
 }
 
 
-void multiply_polynom() {
-	if (polynom_index == 0) {
+void multiply_polynom(int index1, int index2) {
+	/*if (polynom_index == 0) {
 	polynom_index++;
-	return ;
-	
-	}
+	return ;	
+	} */
 
-	for (int i = 0; i < nom_number[0]; i++) {
-		for(int j =0; j < nom_number[1]; j++) {
-			add_nom(polynom[0][i].coef*polynom[1][j].coef, polynom[0][i].deg + polynom[1][j].deg, 2);
+	for (int i = 0; i < nom_number[index1]; i++) {
+		for(int j =0; j < nom_number[index2]; j++) {
+			add_nom(polynom[index1][i].coef*polynom[index2][j].coef, polynom[index1][i].deg + polynom[index2][j].deg, 99);
 		}	
 	}
 	
-	for (int i = 0; i < nom_number[0]; i++)  {
-		polynom[0][i].coef = 0;;
-		polynom[0][i].deg = 0;
+	for (int i = 0; i < nom_number[index1]; i++)  {
+		polynom[index1][i].coef = 0;;
+		polynom[index1][i].deg = 0;
 	}
-	for (int i = 0; i < nom_number[1]; i++)  {
-		polynom[1][i].coef = 0;;
-		polynom[1][i].deg = 0;
+	for (int i = 0; i < nom_number[index2]; i++)  {
+		polynom[index2][i].coef = 0;;
+		polynom[index2][i].deg = 0;
 	}
 	
 
 
-	for (int i = 0; i < nom_number[2]; i++)  {
-		polynom[0][i].coef = polynom[2][i].coef;
-		polynom[0][i].deg = polynom[2][i].deg;
+	for (int i = 0; i < nom_number[99]; i++)  {
+		polynom[index1][i].coef = polynom[99][i].coef;
+		polynom[index1][i].deg = polynom[99][i].deg;
 	}
-	for (int i = 0; i < nom_number[2]; i++)  {
-		polynom[2][i].coef = 0;;
-		polynom[2][i].deg = 0;
+	for (int i = 0; i < nom_number[99]; i++)  {
+		polynom[99][i].coef = 0;;
+		polynom[99][i].deg = 0;
 	}
 	
 	
 	
-	nom_number[0] = nom_number[2];
-	nom_number[1] = 0;
-	nom_number[2] = 0;
+	nom_number[index1] = nom_number[99];
+	nom_number[index2] = 0;
+	nom_number[99] = 0;
 
 	
 }
@@ -113,36 +114,37 @@ int num;
 //%token <letter> LETTER_TOKEN
 //%token <deg> DEGREE_TOKEN 
 /*%type <f> E T F */
-%type <num> N M
+%type <num> N M E P T
 //%type <letter> L
 
 
 %%
 
-S : T
+S : T					{ print_polynom();						}
   ;
-T : P * P 
-  | P
-  ;
-
-P : '(' E ')'
+T : T * P 				{ multiply_polynom($1, $2);	$$ = $1;	}
+  | P					{ $$ = $1;								}
   ;
 
-E : E '+' M
-  | E '-' M 
-  | M
+P : '(' E ')'			{ polynom_index++;	$$ = $2;		}
   ;
 
-M : N 'x' 
-  | N 'x' ^ N 
-  | N
-  | 'x'
-  | N 'x'
+E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
+  | E '-' M 			{ add_nom(-t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
+  | M					{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = polynom_index;	}
   ;
 
-N : NUM_TOKEN			{$$ = $1;			} 
-  | '+' NUM_TOKEN		{$$ = $2;			} 
-  | '-' NUM_TOKEN		{$$ = -$2;			} 
+M : N 'x' 				{ t_nom.coef = $1; t_nom.deg = 1;	}
+  | N 'x' '^' N 		{ t_nom.coef = $1; t_nom.deg = $4;	}
+  | N					{ t_nom.coef = $1; t_nom.deg = 1;	}
+  | 'x'					{ t_nom.coef = 1; t_nom.deg = 1;	}
+  | N 'x'				{ t_nom.coef = $1; t_nom.deg = 1;	}
+  | 'x' '^' N			{ t_nom.coef = 1; t_nom.deg = $3;	}
+  ;
+
+N : NUM_TOKEN			{ $$ = $1;			} 
+  | '+' NUM_TOKEN		{ $$ = $2;			} 
+  | '-' NUM_TOKEN		{ $$ = -$2;			} 
   ;
 
 /*
