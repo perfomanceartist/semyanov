@@ -20,7 +20,7 @@ int nom_number[100] = {0, 0, 0};
 int polynom_index = 0;
 
 int add_nom(int coef, int deg, int index);
-void print_polynom();
+void print_polynom(int index);
 void negate_polynom(int index1);
 void add_list_append(int index1, int index2);
 void add_polynom(int index1, int index2);
@@ -52,16 +52,15 @@ int num;
 
 %%
 
-S : T					{ make_sum(); print_polynom();						}
+S : T					{ make_sum(); print_polynom(0);						}
   ;
-T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1;					}
+T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1; print_polynom($1);					}
   | T '+' P 			{ add_list_append($1, $3); 		$$ = $1;					}
   | T '-' P 			{ negate_polynom($3); add_list_append($1, $3);  	$$ = $1;	}
   | P					{ $$ = $1;												}
   ;
 
-P : '(' E ')'			{ polynom_index++;	$$ = $2;		}
-  //|  E 					{ polynom_index++;	$$ = $1;		}
+P : '(' E ')'			{ printf("New polynom with index %d\n", $2); polynom_index++;	$$ = $2;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
@@ -82,65 +81,6 @@ N : NUM_TOKEN			{ $$ = $1;			}
   | '-' NUM_TOKEN		{ $$ = -$2;			} 
   ;
 
-/*
-S : E '='		 {  multiply_polynom(); polynom_index = 0; print_polynom(); exit(0); }  
-  ;
-
-
-
-E : E '*' M		{  multiply_polynom(); add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0; }
-  | E '*' '+' M		{  multiply_polynom(); add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0; }
-  | E '*' '-' M		{  multiply_polynom(); add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0; }
-  | E '+' M 		{  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
-  | E '-' M 		{  add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}  
-  | M                   {  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}    
-  | '+' M       	{  add_nom(t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}
-  | '-' M               {  add_nom(-t_nom.coef, t_nom.deg, polynom_index); t_nom.coef = 0; t_nom.deg = 0;}    
-    
-  ;
-
-
-
-M : N 'x' '^' N 	{ t_nom.coef = $1; t_nom.deg = $4;	}
-  | N 'x' '^' '+' N 	{ t_nom.coef = $1; t_nom.deg = $5;	}
-  | N 'x' '^' '-' N 	{ t_nom.coef = $1; t_nom.deg = -$5;	}
-
-  | N 'x'		{ t_nom.coef = $1; t_nom.deg = 1;	}
-  | 'x' '^' N		{ t_nom.coef = 1; t_nom.deg = $3;	}
-  | 'x' '^' '+' N	{ t_nom.coef = 1; t_nom.deg = $4;	}
-  | 'x' '^' '-' N	{ t_nom.coef = 1; t_nom.deg = -$4;	}
-  | 'x'			{ t_nom.coef = 1; t_nom.deg = 1;	}
-  | N 			{ t_nom.coef = $1; t_nom.deg = 0;	}
-  ;
-
-
-
-N : NUM_TOKEN 	  	{$$ = $1;} 
-  ;
-
-*/
- 
-
-
-/*S : E {printf("%f\n", $1); }
-  ;
-
-E : E '+' T {$$ = $1 + $3;}
-  | E '-' T {$$ = $1 - $3;}
-  | T 	    {$$=$1;}
-  ;
-
-T : T '*' F {$$ = $1 * $3;}
-  | T '/' F {$$ = $1 / $3;}
-  | F      {$$=$1;}
-  ;
-
-F : '(' E ')' {$$ = $2;}
-  | '-' F     {$$ = - $2;}
-  | '+' F     {$$=$2;}
-  | NUM       {$$ = $1;}
-  ;
-*/
 
 %%
 
@@ -166,25 +106,24 @@ int add_nom(int coef, int deg, int index) {
 	return nom_number[index];
 }
 
-void print_polynom() {
-	polynom_index = 0;
+void print_polynom(int index) {
 	printf("RESULT:\n");
-	if (nom_number[polynom_index] == 0) printf("0");
-	for (int i = 0; i < nom_number[polynom_index]; i++) {
+	if (nom_number[index] == 0) printf("0");
+	for (int i = 0; i < nom_number[index]; i++) {
 		//printf("COEF: %d; Letter: %c; Degree: %d\n", polynom[i].coef, polynom[i].letter, polynom[i].deg);
-		if (polynom[polynom_index][i].coef > 0) printf("+");		
-		if (polynom[polynom_index][i].coef !=1 || polynom[polynom_index][i].deg == 0) {
+		if (polynom[index][i].coef > 0) printf("+");		
+		if (polynom[index][i].coef !=1 || polynom[index][i].deg == 0) {
 			
-			printf("%d", polynom[polynom_index][i].coef);
+			printf("%d", polynom[index][i].coef);
 		}
-		if (polynom[polynom_index][i].deg != 0)  {
+		if (polynom[index][i].deg != 0)  {
 			printf("x");
-			if (polynom[polynom_index][i].deg != 1) printf("^%d", polynom[polynom_index][i].deg);
+			if (polynom[index][i].deg != 1) printf("^%d", polynom[index][i].deg);
 		}
 		printf(" ");
 
-		/*if (polynom[polynom_index][i].coef > 0) printf("+%d*%c^%d ", polynom[polynom_index][i].coef, 'x', polynom[polynom_index][i].deg);
-		else printf("%d*%c^%d ", polynom[polynom_index][i].coef, 'x', polynom[polynom_index][i].deg); */
+		/*if (polynom[index][i].coef > 0) printf("+%d*%c^%d ", polynom[index][i].coef, 'x', polynom[index][i].deg);
+		else printf("%d*%c^%d ", polynom[index][i].coef, 'x', polynom[index][i].deg); */
 	}
 	printf("\n");
 }
