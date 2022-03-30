@@ -153,7 +153,7 @@ void add_polynom(int index1, int index2) {
 }
 
 void make_sum() {
-	for (int i = 0; i < add_list_num; i++) {
+	for (int i = add_list_num - 1; i >= 0; i--) {
 		add_polynom(add_list[i].i1, add_list[i].i2);
 	}
 	add_list_num = 0;
