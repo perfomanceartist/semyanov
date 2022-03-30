@@ -52,7 +52,7 @@ int num;
 
 %%
 
-S : T					{ make_sum(); print_polynom(0);						}
+S : T					{ make_sum(); printf("Result:");print_polynom(0);						}
   ;
 T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1; print_polynom($1);					}
   | T '+' P 			{ add_list_append($1, $3); 		$$ = $1;					}
@@ -60,7 +60,7 @@ T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1; print_polynom($1);					}
   | P					{ $$ = $1;												}
   ;
 
-P : '(' E ')'			{ printf("New polynom with index %d\n", $2); polynom_index++;	$$ = $2;		}
+P : '(' E ')'			{ printf("New polynom with index %d:", $2); print_polynom($1);	polynom_index++;	$$ = $2;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
@@ -107,7 +107,7 @@ int add_nom(int coef, int deg, int index) {
 }
 
 void print_polynom(int index) {
-	printf("RESULT:\n");
+	//printf("RESULT:\n");
 	if (nom_number[index] == 0) printf("0");
 	for (int i = 0; i < nom_number[index]; i++) {
 		//printf("COEF: %d; Letter: %c; Degree: %d\n", polynom[i].coef, polynom[i].letter, polynom[i].deg);
