@@ -69,6 +69,28 @@ void negate_polynom(int index1) {
 	}
 }
 
+typedef struct {
+	int i1;
+	int i2;
+} add_list_node;
+
+add_list_node add_list[100];
+int add_list_num = 0;
+
+add_list_append(int index1, int index2) {
+	add_list[add_list_num].i1 = index1;
+	add_list[add_list_num].i2 = index2;
+	add_list_num++;
+}
+
+void make_sum() {
+	for (int i = 0; i < add_list_num; i++) {
+		add_polynom(add_list[i].i1, add_list[i].i2);
+	}
+	add_list_num = 0;
+
+}
+
 void add_polynom(int index1, int index2) {
 	for (int i = 0; i < nom_number[index2]; i++) {
 		add_nom(polynom[index2][i].coef, polynom[index2][i].deg, index1);
@@ -138,11 +160,11 @@ int num;
 
 %%
 
-S : T					{ print_polynom();						}
+S : T					{ make_sum(); print_polynom();						}
   ;
 T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1;					}
-  | T '+' P 			{ add_polynom($1, $3); 		$$ = $1;					}
-  | T '-' P 			{ negate_polynom($3); add_polynom($1, $3); 	$$ = $1;	}
+  | T '+' P 			{ add_list_append($1, $3); 		$$ = $1;					}
+  | T '-' P 			{ negate_polynom($3); add_list_append($1, $3);  	$$ = $1;	}
   | P					{ $$ = $1;												}
   ;
 
