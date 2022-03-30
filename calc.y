@@ -147,6 +147,7 @@ T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1;					}
   ;
 
 P :  '(' E ')'			{ polynom_index++;	$$ = $2;		}
+  | E				{ polynom_index++;	$$ = $1;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
