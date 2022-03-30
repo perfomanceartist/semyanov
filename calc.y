@@ -60,7 +60,7 @@ T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1; print_polynom($1);					}
   | P					{ $$ = $1;												}
   ;
 
-P : '(' E ')'			{ printf("New polynom with index %d:", $2); print_polynom($1);	polynom_index++;	$$ = $2;		}
+P : '(' E ')'			{ printf("New polynom with index %d:", $2); print_polynom($2);	polynom_index++;	$$ = $2;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
