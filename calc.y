@@ -146,8 +146,8 @@ T : T '*' P 			{ multiply_polynom($1, $3);	$$ = $1;					}
   | P					{ $$ = $1;												}
   ;
 
-P : '(' P ')'			{ polynom_index++;	$$ = $2;		}
-  | '(' E ')'			{ polynom_index++;	$$ = $2;		}
+P : '(' E ')'			{ polynom_index++;	$$ = $2;		}
+  |  E 					{ polynom_index++;	$$ = $1;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
@@ -158,7 +158,7 @@ E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
 M : N 'x' 				{ t_nom.coef = $1; t_nom.deg = 1;	}
   | N 'x' '^' N 		{ t_nom.coef = $1; t_nom.deg = $4;	}
   | N					{ t_nom.coef = $1; t_nom.deg = 0;	}
-  | 'x'					{ t_nom.coef = 1; t_nom.deg = 1;	}
+  | 'x'					{ t_nom.coef = 10; t_nom.deg = 1;	}
   | N 'x'				{ t_nom.coef = $1; t_nom.deg = 1;	}
   | 'x' '^' N			{ t_nom.coef = 1; t_nom.deg = $3;	}
   ;
