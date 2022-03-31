@@ -5,7 +5,7 @@
 extern int yylex();
 void yyerror(char *msg);
 typedef struct {
-	int deg;
+int deg
 int coef;
 } nom;
 nom t_nom;
@@ -51,15 +51,15 @@ int num;
 
 %%
 
-S : T					{ make_sum(); /*printf("Result:"); */print_polynom(0);						}
+S : T					{ make_sum(); printf("Result:"); print_polynom(0);						}
   ;
-T : T '*' P 			{ /*printf("Multipying %d and %d\n", $1, $3); */($1, $3);	$$ = $1; /*print_polynom($1);		*/			}
+T : T '*' P 			{ /*printf("Multipying %d and %d\n", $1, $3); */multiply_polynom($1, $3);	$$ = $1; /*print_polynom($1);		*/			}
   | T '+' P 			{ add_list_append($1, $3); 		$$ = $3;					}
   | T '-' P 			{ negate_polynom($3); add_list_append($1, $3);  	$$ = $3;	}
-  | P					{ $$ = $1;	/*	printf("T:P, P = %d\n", $$); */										}
+  | P					{ $$ = $1;		/*printf("T:P, P = %d\n", $$);	*/									}
   ;
 
-P : '(' E ')'			{ /* printf("New polynom with index %d:", $2);  print_polynom($2); */	polynom_index++;	$$ = $2;		}
+P : '(' E ')'			{ /*printf("New polynom with index %d:", $2); print_polynom($2);*/	polynom_index++;	$$ = $2;		}
   ;
 
 E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
@@ -152,7 +152,7 @@ void add_polynom(int index1, int index2) {
 }
 
 void make_sum() {
-	for (int i = 0; i < add_list_num; i++) {
+	for (int i = add_list_num - 1; i >= 0; i--) {
 		add_polynom(add_list[i].i1, add_list[i].i2);
 	}
 	add_list_num = 0;
