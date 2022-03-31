@@ -6,11 +6,6 @@ extern int yylex();
 void yyerror(char *msg);
 typedef struct {
 	int deg;
-	char letter
-} nom_letter;
-typedef struct {
-nom_letter[100];
-int num_letter;
 int coef;
 } nom;
 nom t_nom;
