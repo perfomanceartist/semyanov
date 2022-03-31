@@ -5,7 +5,7 @@
 extern int yylex();
 void yyerror(char *msg);
 typedef struct {
-int deg
+int deg;
 int coef;
 } nom;
 nom t_nom;
