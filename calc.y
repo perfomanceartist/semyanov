@@ -51,7 +51,7 @@ int num;
 
 %%
 
-S : T					{ make_sum(); printf("Result:"); print_polynom(0);						}
+S : T '='					{ make_sum(); printf("Result:"); print_polynom(0);						}
   ;
 T : T '*' P 			{ /*printf("Multipying %d and %d\n", $1, $3); */multiply_polynom($1, $3);	$$ = $1; /*print_polynom($1);		*/			}
   | T '+' P 			{ add_list_append($1, $3); 		$$ = $3;					}
