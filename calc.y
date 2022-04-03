@@ -5,7 +5,12 @@
 extern int yylex();
 void yyerror(char *msg);
 typedef struct {
-int deg;
+	int deg;
+	char letter;
+} nom_var;
+typedef struct {
+nom_var[100] vars;
+int nom_var_letter;
 int coef;
 } nom;
 nom t_nom;
@@ -15,7 +20,6 @@ nom t_nom;
 
 nom polynom[100][100];
 int nom_number[100] = {0, 0, 0};
-//nom_number[0] = 0; nom_number[1] = 0; nom_number[2] = 0;
 int polynom_index = 0;
 
 int add_nom(int coef, int deg, int index);
@@ -25,6 +29,8 @@ void add_list_append(int index1, int index2);
 void add_polynom(int index1, int index2);
 void make_sum();
 void multiply_polynom(int index1, int index2);
+int find_free_index();
+
 
 typedef struct {
 	int i1;
@@ -40,37 +46,35 @@ int add_list_num = 0;
 
 %union {
 int num;
+char letter;
 }
 
-%token <num> NUM_TOKEN
-%type <num> N M E P T
-//%type <letter> L
+%token <num> NUM_TOKEN LETTER_TOKEN
+%type <num> N M P 
+%type <letter> L
 
-%left '+' '-' '*'
- 
+%left '+' '-' 
+%left '*'
 
 %%
 
-S : T '='					{ make_sum(); printf("Result:"); print_polynom(0);						}
-  ;
-T : T '*' P 			{ /*printf("Multipying %d and %d\n", $1, $3); */multiply_polynom($1, $3);	$$ = $1; /*print_polynom($1);		*/			}
-  | T '+' P 			{ add_list_append($1, $3); 		$$ = $3;					}
-  | T '-' P 			{ negate_polynom($3); add_list_append($1, $3);  	$$ = $3;	}
-  | P					{ $$ = $1;		/*printf("T:P, P = %d\n", $$);	*/									}
+
+S : P ';' 				{ printf("Result:"); print_polynom($1);}
   ;
 
-P : '(' E ')'			{ /*printf("New polynom with index %d:", $2); print_polynom($2);*/	polynom_index++;	$$ = $2;		}
+P : P '*' P 			{ multiply_polynom($1, $3);	polynom_index = find_free_index(); $$ = $1;	}
+  | P '+' P				{ add_polynom($1, $3); 	polynom_index = find_free_index(); $$ = $1;			}
+  | P '-' P				{ negate_polynom($3); add_polynom($1, $3); 	polynom_index = find_free_index(); $$ = $1;				}
+  | '(' P ')'			{ $$ = $2;																	}
+  | M  					{ polynom_index = find_free_index(); add_nom(t_nom.coef, t_nom.deg, polynom_index);  $$ = polynom_index;	}
   ;
 
-E : E '+' M				{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
-  | E '-' M 			{ add_nom(-t_nom.coef, t_nom.deg, polynom_index); $$ = $1;				}
-  | M					{ add_nom(t_nom.coef, t_nom.deg, polynom_index); $$ = polynom_index;	}
-  ;
+
 
 M : N 'x' 				{ t_nom.coef = $1; t_nom.deg = 1;	}
   | N 'x' '^' N 		{ t_nom.coef = $1; t_nom.deg = $4;	}
   | N					{ t_nom.coef = $1; t_nom.deg = 0;	}
-  | 'x'					{ t_nom.coef = 10; t_nom.deg = 1;	}
+  | 'x'					{ t_nom.coef = 1; t_nom.deg = 1;	}
   | N 'x'				{ t_nom.coef = $1; t_nom.deg = 1;	}
   | 'x' '^' N			{ t_nom.coef = 1; t_nom.deg = $3;	}
   ;
@@ -83,6 +87,12 @@ N : NUM_TOKEN			{ $$ = $1;			}
 
 %%
 
+int find_free_index() {
+	for (int i=0; i < 100; i++) {
+		if (nom_number[i] == 0) return i;
+	}
+	return -1;
+}
 
 int add_nom(int coef, int deg, int index) {
        // printf("Adding %d * x ^ %d in %d polynom\n", coef, deg, index);
@@ -166,7 +176,8 @@ void multiply_polynom(int index1, int index2) {
 	polynom_index++;
 	return ;	
 	} */
-
+	//print_polynom(index1);
+	//print_polynom(index2);
 	for (int i = 0; i < nom_number[index1]; i++) {
 		for(int j =0; j < nom_number[index2]; j++) {
 			add_nom(polynom[index1][i].coef*polynom[index2][j].coef, polynom[index1][i].deg + polynom[index2][j].deg, 99);
