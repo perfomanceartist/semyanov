@@ -1,0 +1,10 @@
+$A = 1 + x;
+$B = 1 + x - $A;
+$C = 1 + x - (1 + x);
+$C = 1 + x - 1 -x;
+
+PRINT $A;
+PRINT $B;
+PRINT $C;
+PRINT $D;
+

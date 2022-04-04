@@ -7,8 +7,8 @@ nom t_nom;
 
 
 
-nom polynom[100][100];
-int nom_number[100] = {0, 0, 0};
+nom polynom[200][100];
+int nom_number[200] = {0};
 int polynom_index = 0;
 
 int add_nom(nom insert_nom, int index);
@@ -20,7 +20,8 @@ void make_sum();
 void multiply_polynom(int index1, int index2);
 int find_free_index();
 void erase_t_nom();
-
+void copy_polynom(int index1, int index2);
+void erase_polynom(int index);
 typedef struct {
 	int i1;
 	int i2;
@@ -28,6 +29,9 @@ typedef struct {
 
 add_list_node add_list[100];
 int add_list_num = 0;
+
+
+
 
 void erase_t_nom() {
     t_nom.coef = 0;
@@ -43,7 +47,7 @@ int find_free_index() {
 
 int add_nom(nom insert_nom, int index) { //Добавить моном в полином 
        // printf("Adding %d * x ^ %d in %d polynom\n", coef, deg, index);
-
+    //print_polynom(index);
 	for (int i = 0; i < nom_number[index]; i++ ) {
 		char looks_alike = 1;
 		for (int j = 0; j < 26; j++) {
@@ -56,8 +60,10 @@ int add_nom(nom insert_nom, int index) { //Добавить моном в пол
 		//нашли такой же моном в полиноме, надо добавить коэффициент
 		polynom[index][i].coef += insert_nom.coef;
 		if (polynom[index][i].coef == 0) {
+            nom_number[index]--;
 			polynom[index][i].coef = polynom[index][nom_number[index]].coef;
 			for (int j = 0; j < 26; j++) polynom[index][i].vars[j] = polynom[index][nom_number[index]].vars[j];
+            
 			return -1;
 		}
 		return i;
@@ -71,6 +77,7 @@ int add_nom(nom insert_nom, int index) { //Добавить моном в пол
 
 void print_polynom(int index) {
 	//printf("RESULT:\n");
+    //printf("nom_number[index] = %d\n", nom_number[index]);
 	if (nom_number[index] == 0) printf("0");
 	for (int i = 0; i < nom_number[index]; i++) {
 		//printf("COEF: %d; Letter: %c; Degree: %d\n", polynom[i].coef, polynom[i].letter, polynom[i].deg);
@@ -99,6 +106,7 @@ void negate_polynom(int index1) {
 	for (int i = 0; i < nom_number[index1]; i++) {
 		polynom[index1][i].coef *= -1;
 	}
+    //print_polynom(index1);
 }
 
 void add_list_append(int index1, int index2) {
@@ -108,20 +116,14 @@ void add_list_append(int index1, int index2) {
 }
 void add_polynom(int index1, int index2) {
 	nom nom_temp;
-
+    //printf("%d:", index2); print_polynom(index2);
 	for (int i = 0; i < nom_number[index2]; i++) {
 		nom_temp.coef = polynom[index2][i].coef;
 		for (int j = 0; j < 26; j++) nom_temp.vars[j] = polynom[index2][i].vars[j];
 		add_nom(nom_temp, index1);
 	}
-	
-	for (int i = 0; i < nom_number[index2]; i++)  {
-		polynom[index2][i].coef = 0;;
-		for (int j = 0; j < 26; j++) polynom[index2][i].vars[j] = 0;
-		
-	}
-
-	nom_number[index2] = 0;
+	//printf("%d:", index1); print_polynom(index1);
+	erase_polynom(index2);
 }
 
 void make_sum() {
@@ -143,7 +145,13 @@ void multiply_polynom(int index1, int index2) {
 			add_nom(temp_nom, 99);            
 		}	
 	}
-	
+
+    erase_polynom(index1);
+    erase_polynom(index2);
+    copy_polynom(index1, 99);
+    erase_polynom(99);
+
+	/*
 	for (int i = 0; i < nom_number[index1]; i++)  {
 		polynom[index1][i].coef = 0;;
 		for (int s = 0; s < 26; s++) polynom[index1][i].vars[s] = 0;
@@ -169,6 +177,24 @@ void multiply_polynom(int index1, int index2) {
 	nom_number[index1] = nom_number[99];
 	nom_number[index2] = 0;
 	nom_number[99] = 0;
-
+    */
 	
+}
+
+void copy_polynom(int index1, int index2) {
+    erase_polynom(index1);
+    for (int i = 0; i < nom_number[index2]; i++) {
+        polynom[index1][i].coef = polynom[index2][i].coef;
+        for (int j = 0;j<26; j++) polynom[index1][i].vars[j] = polynom[index2][i].vars[j];
+    }
+    nom_number[index1] = nom_number[index2];
+}
+
+
+void erase_polynom(int index) {
+    for (int i = 0; i < nom_number[index]; i++) {
+        polynom[index][i].coef = 0;
+        for (int j = 0;j<26; j++) polynom[index][i].vars[j] = 0;
+    }
+    nom_number[index] = 0;
 }
