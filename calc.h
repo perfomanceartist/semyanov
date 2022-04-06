@@ -30,8 +30,10 @@ typedef struct {
 add_list_node add_list[100];
 int add_list_num = 0;
 
+unsigned line_number = 1;
 
-
+char defined_vars[26] = {0};
+char was_var[99] =  {0};
 
 void erase_t_nom() {
     t_nom.coef = 0;
